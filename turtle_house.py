@@ -1,5 +1,6 @@
 from turtle import *
 t = Turtle()
+t.screen.bgcolor("orange")
 
 t.fd(84)
 t.left(45)
