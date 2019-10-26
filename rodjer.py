@@ -1,3 +1,4 @@
+from random import randint, choice
 print('Привет! Меня зовут Роджер! А как тебя?')
 name = input()
 name = name.capitalize()
@@ -17,6 +18,8 @@ while ready not in {'да', 'нет'}:
 if ready == 'да':
     examples_quantity = ''  # количество примеров
     maximum_answer = ''  # до скольки будем считать
+    correct_answers = 0  # количество правильных ответов
+    fails = 0  # количесво ошибок
 
     # зададим основные условия выполнения программы и проверим их
     while not examples_quantity.isdigit():
@@ -47,7 +50,36 @@ if ready == 'да':
 
     print('Хорошо тогда начинаем!')
     for question in range(int(examples_quantity)):
-        print('Пример ' + str(question+1) + ':')
+
+        number1 = randint(1,int(maximum_answer))
+        number2 = randint(1,int(maximum_answer))
+        sign = choice('+-')
+
+
+        if sign == '-':
+            while number1 < number2:
+                number1 = randint(1,int(maximum_answer))
+                number2 = randint(1,int(maximum_answer))
+            correct_answer = number1 - number2
+        if sign == '+':
+            while number1 + number2 > int(maximum_answer):
+                number1 = randint(1,int(maximum_answer))
+                number2 = randint(1,int(maximum_answer))
+            correct_answer = number1 + number2
+
+        print('Пример ' + str(question+1) + ':')        
+        print('Сколько будет ',number1,sign,number2)
+        answer = input()
+
+        if correct_answer == answer:
+            print('Правильно, молодец!')
+        else:
+            print('Неправильно!')
+            print(f'Правильный ответ: {correct_answer}')
+
+
+
+
 
 else:
     print('''Передумал? Хорошо, может как нибудь в следующий раз...
