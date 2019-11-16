@@ -1,4 +1,6 @@
 from random import randint, choice
+from timeit import default_timer
+
 print('Привет! Меня зовут Роджер! А как тебя?')
 name = input()
 name = name.capitalize()
@@ -69,18 +71,18 @@ if ready == 'да':
 
         print('Пример ' + str(question+1) + ':')        
         print('Сколько будет ',number1,sign,number2)
-        answer = input()
+
+        start = default_timer()
+        answer = int(input())
+        stop = default_timer()
+
+        answer_time = stop - start
 
         if correct_answer == answer:
             print('Правильно, молодец!')
         else:
             print('Неправильно!')
             print(f'Правильный ответ: {correct_answer}')
-
-
-
-
-
 else:
     print('''Передумал? Хорошо, может как нибудь в следующий раз...
 ''')
