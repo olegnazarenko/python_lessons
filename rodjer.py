@@ -1,6 +1,7 @@
 from random import randint, choice
 from timeit import default_timer
 from warnings_generator import generate_warning
+import os
 
 
 # функция выбора режима работы
@@ -8,15 +9,16 @@ def select_mode():
     print('''
    Режимы:
    1 - тренировка
+   2 - работа над ошибками
    0 - выход
        ''')
 
     mode = ''
-    while mode not in {'0', '1'}:
+    while mode not in {'0', '1', '2'}:
         print('Выберы режим:')
         mode = input()
-        if mode not in {'0', '1'}:
-            print('Должно быть 0, или 1')
+        if mode not in {'0', '1', '2'}:
+            print('Должно быть 0, 1 или 2')
 
     return mode
 
@@ -108,7 +110,7 @@ def count():
 
         print('Пример ' + str(question+1) + ':')        
         print('Сколько будет ',number1,sign,number2)
-
+ 
         start = default_timer()
         answer = int(input())
         stop = default_timer()
@@ -119,6 +121,9 @@ def count():
             print('Правильно, молодец!')
             correct_answers += 1
         else:
+            with open(f'{name}_errors.txt', 'a') as f:
+                f.write(f'{number1} {sign} {number2} 3\n')
+  
             print(generate_warning())
             print(f'Правильный ответ: {correct_answer}')
             fails += 1
@@ -130,7 +135,41 @@ def count():
         print(f'Правильных ответов: {correct_answers}')
         print(f'Неправильных ответов: {fails}')    
     print(f'{seconds_convert(answer_time)}')
+
+
+def fix_errors(name):
+    with open(f'{name}_errors.txt','r') as f, open(f'tmp_{name}_errors.txt','a') as f2:
+
+        for line in f:
+
+            splited_line = line.split()
+            number1, sign, number2, repeat = splited_line
+
+            number1 = int(number1)
+            number2 = int(number2)
+            repeat = int(repeat)
+
+            print(f'Сколько будет {number1} {sign} {number2}?')
+            answer = int(input())
+
+            if sign == '+':
+                correct_answer = number1 + number2
+            else:
+                correct_answer = number1 - number2
+            
+            if correct_answer == answer:
+                print('Правильно, молодец!')
+                f2.write(f'{number1} {sign} {number2} {repeat-1}\n')
+            else:
+                print('Неправильно!')
+                f2.write(f'{number1} {sign} {number2} {repeat}\n')
     
+    os.remove(f'{name}_errors.txt')
+    os.rename(f'tmp_{name}_errors.txt', f'{name}_errors.txt')
+            
+
+
+
 
 # основной блок программы
 print('Привет! Меня зовут Роджер! А как тебя?')
@@ -144,6 +183,8 @@ while True:
     mode = select_mode()
     if mode == '1':
         count()
+    elif mode == '2':
+        fix_errors(name)
     elif mode == '0':
         break
     else:
