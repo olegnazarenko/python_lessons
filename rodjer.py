@@ -22,6 +22,11 @@ def select_mode():
 
     return mode
 
+def remove_dublicate (file_name):
+    f = open(file_name, 'r')
+    f2 = (f'tmp_{file_name}, a')
+    uniques = []
+
 # функция возврата временных окончаний
 def time_endings(seconds):
     if 10<seconds<20:
@@ -61,6 +66,8 @@ def count():
     correct_answers = 0  # количество правильных ответов
     fails = 0  # количесво ошибок
     answer_time = 0  # затраченое время на все ответы
+    uniques_examples = []  # список уникальных примеров 
+    example_number = 0  # номер примера
 
     # зададим основные условия выполнения программы и проверим их
     while not examples_quantity.isdigit():
@@ -90,7 +97,8 @@ def count():
             print('Должна быть цифра.')
 
     print('Хорошо тогда начинаем!')
-    for question in range(int(examples_quantity)):
+
+    for i in range(int(examples_quantity)):
 
         number1 = randint(1,int(maximum_answer))
         number2 = randint(1,int(maximum_answer))
@@ -108,11 +116,23 @@ def count():
                 number2 = randint(1,int(maximum_answer))
             correct_answer = number1 + number2
 
-        print('Пример ' + str(question+1) + ':')        
+       
+            
+        example = f'{number1} {sign} {number2}' 
+
+
+        if example not in uniques_examples:
+            uniques_examples.append(example)
+            example_number +=1
+            print(f'Пример {example_number}:')
+
         print('Сколько будет ',number1,sign,number2)
  
         start = default_timer()
-        answer = int(input())
+        answer = input()
+        while not answer.isdigit():
+                    print('Должна быть цифра.')
+                    answer = input()
         stop = default_timer()
 
         answer_time += round(stop - start)
@@ -159,16 +179,19 @@ def fix_errors(name):
             
             if correct_answer == answer:
                 print('Правильно, молодец!')
-                f2.write(f'{number1} {sign} {number2} {repeat-1}\n')
+                if int(repeat) > 1:
+                    f2.write(f'{number1} {sign} {number2} {repeat-1}\n')
             else:
                 print('Неправильно!')
                 f2.write(f'{number1} {sign} {number2} {repeat}\n')
     
     os.remove(f'{name}_errors.txt')
-    os.rename(f'tmp_{name}_errors.txt', f'{name}_errors.txt')
+    if os.path.getsize(f'tmp_{name}_errors.txt') > 0:
+        os.rename(f'tmp_{name}_errors.txt', f'{name}_errors.txt')
+    else:
+        os.remove(f'tmp_{name}_errors.txt')
             
-
-
+ 
 
 
 # основной блок программы
