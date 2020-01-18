@@ -6,26 +6,50 @@ import os
 
 # функция выбора режима работы
 def select_mode():
-    print('''
-   Режимы:
-   1 - тренировка
-   2 - работа над ошибками
-   0 - выход
-       ''')
 
     mode = ''
-    while mode not in {'0', '1', '2'}:
-        print('Выберы режим:')
-        mode = input()
-        if mode not in {'0', '1', '2'}:
-            print('Должно быть 0, 1 или 2')
 
+    if os.path.exists(f'{name}_errors.txt'):
+
+        print('''
+    Режимы:
+    1 - тренировка
+    2 - работа над ошибками
+    0 - выход
+        ''')
+
+        while mode not in {'0', '1', '2'}:
+            print('Выберы режим:')
+            mode = input()
+            if mode not in {'0', '1', '2'}:
+                print('Должно быть 0, 1 или 2')
+    else:
+        print('''
+    Режимы:
+    1 - тренировка
+    0 - выход
+        ''')
+    
+        while mode not in {'0', '1'}:
+            print('Выберы режим:')
+            mode = input()
+            if mode not in {'0', '1'}:
+                print('Должно быть 0, или 1')
+    
     return mode
 
 def remove_dublicate (file_name):
-    f = open(file_name, 'r')
-    f2 = (f'tmp_{file_name}, a')
-    uniques = []
+
+    uniques = [] #  уникальные примеры
+
+    with open(file_name, 'r') as f, open(f'tmp_{file_name}', 'a') as f2:
+        
+        for line in f:
+            if line not in uniques:
+                uniques.append(line)
+                f2.write(line)
+    
+
 
 # функция возврата временных окончаний
 def time_endings(seconds):
@@ -197,10 +221,10 @@ def fix_errors(name):
 # основной блок программы
 print('Привет! Меня зовут Роджер! А как тебя?')
 name = input()
-name = name.capitalize()
+name = name.title()
 print(f'Приятно познакомиться, {name}!')
 
-
+remove_dublicate(f'{name}_errors.txt')
 
 while True:
     mode = select_mode()
